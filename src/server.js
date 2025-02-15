@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
-const usuariosRoutes = require('./routes/usuarios'); // Agora correto
+const usuariosRoutes = require('./routes/usuarios'); 
 const transacoesRoutes = require('./routes/transacoes');
+const authRoutes = require('./routes/authRoutes'); 
 
 const app = express();
 const port = 3000;
@@ -13,6 +15,7 @@ app.get('/', (req, res) => {
 });
 
 // Rotas separadas
+app.use('/auth', authRoutes);
 app.use('/usuarios', usuariosRoutes);
 app.use('/transacoes', transacoesRoutes);
 

@@ -1,13 +1,16 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
+const client = require('../db'); 
+
 const router = express.Router();
-const client = require('../db'); // Agora correto
 
 router.post('/', async (req, res) => {
     const { nome, email, senha } = req.body;
     try {
+        const senhaHash = await bcrypt.hash(senha, 10);
         const result = await client.query(
             'INSERT INTO usuarios (nome, email, senha) VALUES ($1, $2, $3) RETURNING *',
-            [nome, email, senha]
+            [nome, email, senhaHash]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
