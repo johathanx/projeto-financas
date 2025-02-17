@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const client = require('../db'); // Agora correto
+const client = require('../db');
 
 router.post('/', async (req, res) => {
-    const { descricao, valor, tipo, usuario_id } = req.body;
+    const { descricao, valor, tipo, usuario_id , categoria} = req.body;
     try {
         const result = await client.query(
-            'INSERT INTO transacoes (descricao, valor, tipo, usuario_id) VALUES ($1, $2, $3, $4) RETURNING *',
-            [descricao, valor, tipo, usuario_id]
+            'INSERT INTO transacoes (descricao, valor, tipo, usuario_id, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [descricao, valor, tipo, usuario_id, categoria]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -28,11 +28,11 @@ router.get('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { descricao, valor, tipo, usuario_id } = req.body;
+    const { descricao, valor, tipo, usuario_id, categoria } = req.body;
     try {
         const result = await client.query(
-            'UPDATE transacoes SET descricao = $1, valor = $2, tipo = $3, usuario_id = $4 WHERE id = $5 RETURNING *',
-            [descricao, valor, tipo, usuario_id, id]
+            'UPDATE transacoes SET descricao = $1, valor = $2, tipo = $3, usuario_id = $4, categoria = $5 WHERE id = $6 RETURNING *',
+            [descricao, valor, tipo, usuario_id, categoria, id]
         );
         if (result.rowCount === 0) {
             return res.status(404).json({ error: 'Transação não encontrada' });
